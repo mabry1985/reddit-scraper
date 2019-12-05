@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const cheerio = require("cheerio");
 const request = require("request-promise");
+const RedditArticle = require("./models/RedditArticle");
 
 async function connectToMongoDb() {
   await mongoose.connect("mongodb+srv://testuser:qwerty123456@cluster0-qqljd.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true});
@@ -13,8 +14,15 @@ async function scrapeReddit() {
   const titles = $("h2");
 
   titles.each((i, el) => {
-    const title = $(el).text();
-    console.log(title);
+    try {
+      const title = $(el).text();
+      const redditArticle = new RedditArticle({
+        title
+      });
+      redditArticle.save();
+    } catch(err) {
+        console.error(err);
+    }
   })
 }
 
