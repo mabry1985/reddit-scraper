@@ -13,13 +13,13 @@ async function scrapeReddit() {
   const $ = await cheerio.load(html);
   const titles = $("h2");
 
-  titles.each((i, el) => {
+  titles.each(async (i, el) => {
     try {
       const title = $(el).text();
       const redditArticle = new RedditArticle({
         title
       });
-      redditArticle.save();
+      await redditArticle.save();
     } catch(err) {
         console.error(err);
     }
